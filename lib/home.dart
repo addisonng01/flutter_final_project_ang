@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_final_project_ang/nba/player.dart';
 import 'edit.dart';
 import 'details.dart';
 import 'nba/team.dart';
@@ -13,22 +14,22 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<String> items = List.generate(5, (index) => 'Item $index');
-  List<Team> teams = [];
+  List<Player> players = [];
 
   // get teams
   Future getTeams() async {
-    var response = await http.get(Uri.https('balldontlie.io', 'api/v1/teams'));
+    var response = await http.get(Uri.https('balldontlie.io', 'api/v1/players'));
     var jsonData = jsonDecode(response.body);
 
-    for (var eachTeam in jsonData['data']) {
-      final team = Team(
-        abbreviation: eachTeam['abbreviation'],
-        city: eachTeam['city'],
+    for (var eachPlayer in jsonData['data']) {
+      final player = Player(
+        id: eachPlayer['id'],
+        first_name: eachPlayer['first_name'],
+        last_name: eachPlayer['last_name'],
+        position: eachPlayer['position'],
       );
-      teams.add(team);
+      players.add(player);
     }
-
-    print(teams.length);
   }
 
   void addItem() {
@@ -60,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    getTeams();
     return Scaffold(
       appBar: AppBar(
         title: Text('List Builder Example'),
@@ -88,10 +90,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Expanded listWeekly() {
     return Expanded(
       child: ListView.builder(
-        itemCount: items.length,
+        itemCount: players.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(items[index]),
+            title: Text(players[index].first_name),
+            subtitle: Text(players[index].position),
             onTap: () {
               // Navigate to the details screen when the list tile is tapped
               Navigator.push(
