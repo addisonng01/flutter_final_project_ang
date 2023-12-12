@@ -10,32 +10,27 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late Future<Player> futurePlayer;
-  List<Player> playerList = [];
+  late Future<List<Player>> playerList;
+  final PlayerRepository playerRepository = PlayerRepository();
 
   @override
   void initState() {
     super.initState();
-    print('in InitState about to get player...');
-    futurePlayer = fetchPlayers() as Future<Player>;
-
-    setState(() {
-      playerList = playerList;
-    });
+    playerList = playerRepository.fetchPlayers();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('List Builder Example'),
+        title: const Text('List Builder Example'),
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(0.0),
+          const Padding(
+            padding: EdgeInsets.all(0.0),
             child: Text(
-              'Top 5 Best Players of the Month',
+              'Top 5 PPG in 2023',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -44,7 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           listMonth(),
           //SizedBox(width: 500, height: 10,),
-          Text('asdsadsa'),
         ],
       ),
     );
@@ -53,26 +47,55 @@ class _HomeScreenState extends State<HomeScreen> {
   Expanded listMonth() {
     return Expanded(
       child: FutureBuilder(
-        future: futurePlayer,
-        builder: (context, snapshot){
-          if (snapshot.data == null ||
-              snapshot.connectionState == ConnectionState.none) {
-            return Container();
+        future: playerList,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Text('No players available.');
+          } else {
+            return listViewBuilder(snapshot.data!);
           }
-          List<Player> myPlayer = snapshot.data! as List<Player>;
-          return ListView.builder(
-            itemCount: playerList.length,
-            itemBuilder: (BuildContext context, int position) {
-              return Card(
-                child: ListTile(
-                title: Text(playerList[position].fullName),
-                subtitle: Text('ID: ${playerList[position].id}'),
-                ),
+        },
+      ),
+    );
+  }
+
+  Widget listViewBuilder(List<Player> players) {
+    return ListView.builder(
+      itemCount: players.length,
+      itemBuilder: (context, position) {
+        return FutureBuilder<Datum?>(
+          future: playerRepository.fetchPlayerStats(players[position].id),
+          builder: (context, statsSnapshot) {
+            final fullname = players[position].first_name + ' ' + players[position].last_name;
+            if (statsSnapshot.connectionState == ConnectionState.waiting) {
+              return ListTile(
+                title: Text(fullname),
+                subtitle: Text('Loading...'),
               );
-            },
-          );
-        }
-      )
+            } else if (statsSnapshot.hasError) {
+              return ListTile(
+                title: Text(fullname),
+                subtitle: Text('Error loading stats: ${statsSnapshot.error}'),
+              );
+            } else if (statsSnapshot.hasData) {
+              final stats = statsSnapshot.data!;
+              return ListTile(
+                title: Text(fullname),
+                subtitle: Text('Points per Game: ${stats.pts}'),
+              );
+            } else {
+              return ListTile(
+                title: Text(fullname),
+                subtitle: Text('No stats available.'),
+              );
+            }
+          },
+        );
+      },
     );
   }
 }
