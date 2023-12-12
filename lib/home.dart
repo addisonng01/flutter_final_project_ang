@@ -17,6 +17,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     playerList = playerRepository.fetchPlayers();
+
+    setState(() {
+      playerList = playerList;
+    });
   }
 
   @override
@@ -67,33 +71,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListView.builder(
       itemCount: players.length,
       itemBuilder: (context, position) {
-        return FutureBuilder<Datum?>(
-          future: playerRepository.fetchPlayerStats(players[position].id),
-          builder: (context, statsSnapshot) {
-            final fullname = players[position].first_name + ' ' + players[position].last_name;
-            if (statsSnapshot.connectionState == ConnectionState.waiting) {
-              return ListTile(
-                title: Text(fullname),
-                subtitle: Text('Loading...'),
-              );
-            } else if (statsSnapshot.hasError) {
-              return ListTile(
-                title: Text(fullname),
-                subtitle: Text('Error loading stats: ${statsSnapshot.error}'),
-              );
-            } else if (statsSnapshot.hasData) {
-              final stats = statsSnapshot.data!;
-              return ListTile(
-                title: Text(fullname),
-                subtitle: Text('Points per Game: ${stats.pts}'),
-              );
-            } else {
-              return ListTile(
-                title: Text(fullname),
-                subtitle: Text('No stats available.'),
-              );
-            }
-          },
+        final fullname = players[position].player.firstName + ' ' + players[position].player.lastName;
+        return Card(
+          child: ListTile(
+            title: Text(fullname),
+            subtitle: Text('test'),
+          ),
         );
       },
     );

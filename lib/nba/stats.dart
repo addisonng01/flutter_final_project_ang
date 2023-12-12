@@ -1,121 +1,186 @@
+// To parse this JSON data, do
+//
+//     final player = playerFromJson(jsonString);
+
+import 'dart:convert';
+
+Player playerFromJson(String str) => Player.fromJson(json.decode(str));
+
+String playerToJson(Player data) => json.encode(data.toJson());
+
 class Player {
-  final String first_name;
-  final String last_name;
-  final int id;
-
-  Player(
-      {
-        required this.first_name,
-        required this.last_name,
-        required this.id,
-      });
-
-  factory Player.fromJson(Map<String, dynamic> json) {
-    return Player(
-      first_name: json['first_name'],
-      last_name: json['last_name'],
-      id: json['id'],
-    );
-  }
-}
-
-class Datum {
-  int gamesPlayed;
-  int playerId;
-  int season;
-  String min;
-  double fgm;
-  double fga;
-  double fg3M;
-  double fg3A;
-  double ftm;
-  double fta;
-  double oreb;
-  double dreb;
-  double reb;
-  double ast;
-  double stl;
-  double blk;
-  double turnover;
-  double pf;
-  double pts;
-  double fgPct;
+  int id;
+  int ast;
+  int blk;
+  int dreb;
   double fg3Pct;
+  int fg3A;
+  int fg3M;
+  double fgPct;
+  int fga;
+  int fgm;
   double ftPct;
+  int fta;
+  int ftm;
+  Game game;
+  String min;
+  int oreb;
+  int pf;
+  PlayerClass player;
+  int pts;
+  int reb;
+  int stl;
+  Team team;
+  int turnover;
 
-  Datum({
-    required this.gamesPlayed,
-    required this.playerId,
-    required this.season,
-    required this.min,
-    required this.fgm,
-    required this.fga,
-    required this.fg3M,
-    required this.fg3A,
-    required this.ftm,
-    required this.fta,
-    required this.oreb,
-    required this.dreb,
-    required this.reb,
+  Player({
+    required this.id,
     required this.ast,
-    required this.stl,
     required this.blk,
-    required this.turnover,
-    required this.pf,
-    required this.pts,
-    required this.fgPct,
+    required this.dreb,
     required this.fg3Pct,
+    required this.fg3A,
+    required this.fg3M,
+    required this.fgPct,
+    required this.fga,
+    required this.fgm,
     required this.ftPct,
+    required this.fta,
+    required this.ftm,
+    required this.game,
+    required this.min,
+    required this.oreb,
+    required this.pf,
+    required this.player,
+    required this.pts,
+    required this.reb,
+    required this.stl,
+    required this.team,
+    required this.turnover,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    gamesPlayed: json["games_played"],
-    playerId: json["player_id"],
-    season: json["season"],
-    min: json["min"],
-    fgm: json["fgm"]?.toDouble(),
-    fga: json["fga"]?.toDouble(),
-    fg3M: json["fg3m"]?.toDouble(),
-    fg3A: json["fg3a"]?.toDouble(),
-    ftm: json["ftm"]?.toDouble(),
-    fta: json["fta"]?.toDouble(),
-    oreb: json["oreb"]?.toDouble(),
-    dreb: json["dreb"]?.toDouble(),
-    reb: json["reb"]?.toDouble(),
-    ast: json["ast"]?.toDouble(),
-    stl: json["stl"]?.toDouble(),
-    blk: json["blk"]?.toDouble(),
-    turnover: json["turnover"]?.toDouble(),
-    pf: json["pf"]?.toDouble(),
-    pts: json["pts"]?.toDouble(),
-    fgPct: json["fg_pct"]?.toDouble(),
+  factory Player.fromJson(Map<String, dynamic> json) => Player(
+    id: json["id"],
+    ast: json["ast"],
+    blk: json["blk"],
+    dreb: json["dreb"],
     fg3Pct: json["fg3_pct"]?.toDouble(),
+    fg3A: json["fg3a"],
+    fg3M: json["fg3m"],
+    fgPct: json["fg_pct"]?.toDouble(),
+    fga: json["fga"],
+    fgm: json["fgm"],
     ftPct: json["ft_pct"]?.toDouble(),
+    fta: json["fta"],
+    ftm: json["ftm"],
+    game: Game.fromJson(json["game"]),
+    min: json["min"],
+    oreb: json["oreb"],
+    pf: json["pf"],
+    player: PlayerClass.fromJson(json["player"]),
+    pts: json["pts"],
+    reb: json["reb"],
+    stl: json["stl"],
+    team: Team.fromJson(json["team"]),
+    turnover: json["turnover"],
   );
 
   Map<String, dynamic> toJson() => {
-    "games_played": gamesPlayed,
-    "player_id": playerId,
-    "season": season,
-    "min": min,
-    "fgm": fgm,
-    "fga": fga,
-    "fg3m": fg3M,
-    "fg3a": fg3A,
-    "ftm": ftm,
-    "fta": fta,
-    "oreb": oreb,
-    "dreb": dreb,
-    "reb": reb,
+    "id": id,
     "ast": ast,
-    "stl": stl,
     "blk": blk,
-    "turnover": turnover,
-    "pf": pf,
-    "pts": pts,
-    "fg_pct": fgPct,
+    "dreb": dreb,
     "fg3_pct": fg3Pct,
+    "fg3a": fg3A,
+    "fg3m": fg3M,
+    "fg_pct": fgPct,
+    "fga": fga,
+    "fgm": fgm,
     "ft_pct": ftPct,
+    "fta": fta,
+    "ftm": ftm,
+    "game": game.toJson(),
+    "min": min,
+    "oreb": oreb,
+    "pf": pf,
+    "player": player.toJson(),
+    "pts": pts,
+    "reb": reb,
+    "stl": stl,
+    "team": team.toJson(),
+    "turnover": turnover,
+  };
+}
+
+class Game {
+  int id;
+  DateTime date;
+  int homeTeamId;
+  int homeTeamScore;
+  int season;
+  int visitorTeamId;
+  int visitorTeamScore;
+
+  Game({
+    required this.id,
+    required this.date,
+    required this.homeTeamId,
+    required this.homeTeamScore,
+    required this.season,
+    required this.visitorTeamId,
+    required this.visitorTeamScore,
+  });
+
+  factory Game.fromJson(Map<String, dynamic> json) => Game(
+    id: json["id"],
+    date: DateTime.parse(json["date"]),
+    homeTeamId: json["home_team_id"],
+    homeTeamScore: json["home_team_score"],
+    season: json["season"],
+    visitorTeamId: json["visitor_team_id"],
+    visitorTeamScore: json["visitor_team_score"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "date": date.toIso8601String(),
+    "home_team_id": homeTeamId,
+    "home_team_score": homeTeamScore,
+    "season": season,
+    "visitor_team_id": visitorTeamId,
+    "visitor_team_score": visitorTeamScore,
+  };
+}
+
+class PlayerClass {
+  int id;
+  String firstName;
+  String lastName;
+  String position;
+  int teamId;
+
+  PlayerClass({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.position,
+    required this.teamId,
+  });
+
+  factory PlayerClass.fromJson(Map<String, dynamic> json) => PlayerClass(
+    id: json["id"],
+    firstName: json["first_name"],
+    lastName: json["last_name"],
+    position: json["position"],
+    teamId: json["team_id"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "first_name": firstName,
+    "last_name": lastName,
+    "position": position,
+    "team_id": teamId,
   };
 }
 
