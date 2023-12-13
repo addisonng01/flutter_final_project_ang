@@ -10,17 +10,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late Future<List<Player>> playerList;
+  late Future<List<Player>> futurePlayer;
   final PlayerRepository playerRepository = PlayerRepository();
 
   @override
   void initState() {
     super.initState();
-    playerList = playerRepository.fetchPlayers();
-
-    setState(() {
-      playerList = playerList;
-    });
+    futurePlayer = playerRepository.fetchPlayers();
   }
 
   @override
@@ -51,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Expanded listMonth() {
     return Expanded(
       child: FutureBuilder(
-        future: playerList,
+        future: futurePlayer,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
@@ -60,25 +56,32 @@ class _HomeScreenState extends State<HomeScreen> {
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Text('No players available.');
           } else {
-            return listViewBuilder(snapshot.data!);
+            List<Player> myPlayerList = snapshot.data!;
+              return ListView.builder(
+                itemCount: myPlayerList.length,
+                itemBuilder: (context, position) {
+                  final fullname = myPlayerList[position].player.firstName + ' ' + myPlayerList[position].player.lastName;
+                  return Card(
+                    child: ListTile(
+                      onTap: () {
+                        // Navigate to the details screen when the list tile is tapped
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailsScreen(item: fullname),
+                          ),
+                        );
+                      },
+                      title: Text(fullname),
+                      subtitle: Text('${myPlayerList[position].pts} pts, ${myPlayerList[position].reb} reb, ${myPlayerList[position].ast} ast'),
+                    ),
+                  );
+                },
+              );
           }
         },
       ),
     );
   }
 
-  Widget listViewBuilder(List<Player> players) {
-    return ListView.builder(
-      itemCount: players.length,
-      itemBuilder: (context, position) {
-        final fullname = players[position].player.firstName + ' ' + players[position].player.lastName;
-        return Card(
-          child: ListTile(
-            title: Text(fullname),
-            subtitle: Text('test'),
-          ),
-        );
-      },
-    );
-  }
 }
