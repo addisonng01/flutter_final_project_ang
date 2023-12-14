@@ -7,7 +7,7 @@ class PlayerRepository {
   static const String baseUrl = 'https://www.balldontlie.io/api/v1/';
 
   Future<List<Player>> fetchPlayers() async {
-    final response = await http.get(Uri.parse('$baseUrl/stats?seasons[]=2023&per_page=100'));
+    final response = await http.get(Uri.parse('$baseUrl/stats?seasons[]=2023&per_page=200'));
     List<Player> playerList = [];
 
     print('Response status code: ${response.statusCode}');
