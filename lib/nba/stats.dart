@@ -2,6 +2,11 @@
 //
 //     final player = playerFromJson(jsonString);
 
+/*
+  The stats.dart file is used to store the data from the API
+  This code is generated from app.quicktype.io
+ */
+
 import 'dart:convert';
 
 Player playerFromJson(String str) => Player.fromJson(json.decode(str));

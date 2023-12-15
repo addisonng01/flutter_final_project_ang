@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'home.dart';
 
+/*
+  The main.dart file is used to run the application. All features of the
+  application are located in separate dart files.
+  ex. home.dart is the file that creates most of the UI for the application
+ */
+
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
   runApp(MyApp());
 }
 
