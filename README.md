@@ -1,16 +1,6 @@
 # flutter_final_project_ang
 
-A new Flutter project.
+Using NBA API to pull statistics from.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The application is meant to be used as an adjacent application similar to the NBA app/Real app.
+The focus is to allow for player and team lookup to view statistics of the players such as points, rebounds, assists, blocks, steals, etc.
